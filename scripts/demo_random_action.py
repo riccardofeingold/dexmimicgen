@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--env",
         type=str,
-        default="TwoArmThreading",
+        default="TwoArmDrawerCleanup",
         help="Name of the environment to run",
     )
 
@@ -77,9 +77,21 @@ if __name__ == "__main__":
         env.render()
 
     # do visualization
-    for i in range(1000):
+    images = []
+    for i in range(100):
         # action = np.zeros_like(low)
         action = np.random.randn(*env.action_spec[0].shape)
         obs, reward, done, _ = env.step(action)
+
+        images.append(obs["agentview_image"])
         if args.render:
             env.render()
+
+    # turn image list into video gif
+    import imageio
+    imageio.mimsave(
+        f"random_action_{args.env}.gif",
+        images,
+        fps=20,
+        loop=0  # 0 means loop forever
+    )
